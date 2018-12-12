@@ -3,6 +3,8 @@ public class Mediator {
 
     private AtomicCounter readersCount = new AtomicCounter();
     private Lock writeLock = new Lock("WriterLock");
+
+    // This lock reduces starvation on the writer
     private Lock turnLock = new Lock("TurnLock");
 
     public void beginRead(String who) {
@@ -35,6 +37,8 @@ public class Mediator {
         }
 
         turnLock.take(who);
+        writeLock.take(who);
+        turnLock.release(who);
     }
 
     public void endWrite(String who) {
@@ -42,6 +46,6 @@ public class Mediator {
             return;
         }
 
-        turnLock.release(who);
+        writeLock.release(who);
     }
 }

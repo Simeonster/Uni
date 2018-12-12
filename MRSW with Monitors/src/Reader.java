@@ -13,6 +13,12 @@ public class Reader implements Runnable {
 
     private void readData() {
         System.out.println("Reader " + id + " : " + Arrays.toString(data));
+
+        try {
+            Thread.sleep(50);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -21,8 +27,6 @@ public class Reader implements Runnable {
             mediator.beginRead("Reader " + id);
             readData();
             mediator.endRead("Reader " + id);
-
-            EntryPoint.healthySleep();
         }
     }
 }

@@ -5,16 +5,10 @@ import java.util.Arrays;
  * creating a single {@link Writer} and multiple {@link Reader} instances.
  * Both operate on an array of shared integers- the writer increments all elements,
  * and the readers print them.
+ *
+ * If you need more information on how the locks are taken, enable DEBUG_PRINT in {@link Lock}
  */
 public class EntryPoint {
-    public static void healthySleep() {
-        try {
-            Thread.sleep(100);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-
     public static void main(String[] args) {
         Mediator mediator = new Mediator();
         Integer[] data = new Integer[30];
@@ -23,8 +17,8 @@ public class EntryPoint {
             data[i] = 0;
         }
 
-        Thread writeThread = new Thread(new Writer(mediator, data));
-        Thread[] readerThreads = new Thread[10];
+        Thread writeThread = new Thread(new Writer(mediator, data, 5000000));
+        Thread[] readerThreads = new Thread[5];
 
         for (int i=0; i<readerThreads.length; i++) {
             readerThreads[i] = new Thread(new Reader(mediator, data, i));
